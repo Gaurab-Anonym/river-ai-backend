@@ -1,10 +1,11 @@
+import os
+import json
 import firebase_admin
 from firebase_admin import credentials, db
-import joblib
-import pandas as pd
-import time
 
-cred = credentials.Certificate("serviceAccountKey.json")
+firebase_json = json.loads(os.environ["FIREBASE_KEY"])
+
+cred = credentials.Certificate(firebase_json)
 
 firebase_admin.initialize_app(cred, {
     "databaseURL": "https://smartwaterdetector-default-rtdb.firebaseio.com/"
