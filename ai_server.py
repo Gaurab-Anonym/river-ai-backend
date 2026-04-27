@@ -4,12 +4,9 @@ import time
 import joblib
 import pandas as pd
 import firebase_admin
-
 from firebase_admin import credentials, db
 
-# ==============================
-# Firebase Secret from Render
-# ==============================
+# Firebase Secret
 firebase_json = json.loads(os.environ["FIREBASE_KEY"])
 
 cred = credentials.Certificate(firebase_json)
@@ -18,23 +15,17 @@ firebase_admin.initialize_app(cred, {
     "databaseURL": "https://smartwaterdetector-default-rtdb.firebaseio.com/"
 })
 
-# ==============================
-# Load AI Model
-# ==============================
+# Load Model
 model = joblib.load("water_model.pkl")
 
-print("AI Server Started Successfully")
+print("AI Server Started")
 
-# ==============================
-# Infinite Loop
-# ==============================
 while True:
     try:
         ref = db.reference("RiverData")
         data = ref.get()
 
         if data:
-
             ph = float(data.get("pH", 7))
             tds = float(data.get("TDS", 0))
             turb = float(data.get("Turbidity", 0))
@@ -50,13 +41,12 @@ while True:
                 "AI_Status": prediction
             })
 
-            print("Updated AI_Status:", prediction)
+            print("Updated:", prediction)
 
         else:
-            print("No RiverData found")
+            print("No data found")
 
     except Exception as e:
         print("Error:", e)
 
     time.sleep(5)
-        time.sleep(5)
